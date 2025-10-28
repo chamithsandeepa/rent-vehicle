@@ -1,5 +1,6 @@
 import { Star, Users, Fuel, Gauge, Wifi, Battery } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { useState } from "react";
 
 interface Specification {
   icon: LucideIcon;
@@ -21,6 +22,8 @@ interface SimilarCar {
 }
 
 const VehicleDetails: React.FC = () => {
+ const [showMore, setShowMore] = useState(false);
+
   const specifications: Specification[] = [
     { icon: Users, label: "5 Seat" },
     { icon: Users, label: "5 Person" },
@@ -78,10 +81,10 @@ const VehicleDetails: React.FC = () => {
   return (
     <div className="w-full space-y-8">
       {/* Description and Specifications Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-[55%_45%] gap-8">
         {/* Description Section */}
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+          <h2 className="text-[24px] font-semibold text-gray-900 mb-4">
             Description
           </h2>
           <p className="text-gray-600 leading-relaxed">
@@ -90,13 +93,35 @@ const VehicleDetails: React.FC = () => {
             this premium van offers plush seating, advanced safety features, and
             a smooth, powerful drive. Enjoy ample legroom, modern infotainment,
             and a stylish{" "}
-            <span className="text-yellow-500 cursor-pointer">see more</span>
+            {showMore ? (
+              <>
+                interior that reflects Mercedes-Benz craftsmanship at its
+                finest. Whether you’re cruising through city streets or gliding
+                across scenic highways, every moment inside the V-Class feels
+                first-class. From adaptive climate control to ambient lighting
+                and sleek design lines, it’s more than just a vehicle — it’s
+                your personal luxury suite on wheels.{" "}
+                <span
+                  className="text-yellow-500 cursor-pointer hover:underline"
+                  onClick={() => setShowMore(false)}
+                >
+                  see less
+                </span>
+              </>
+            ) : (
+              <span
+                className="text-yellow-500 cursor-pointer hover:underline"
+                onClick={() => setShowMore(true)}
+              >
+                see more
+              </span>
+            )}
           </p>
         </div>
 
         {/* Car Specifications */}
-        <div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+        <div className="pl-2">
+          <h2 className="text-[24px] font-semibold text-gray-900 mb-4 ">
             Car Specifications
           </h2>
           <div className="grid grid-cols-3 gap-3">
@@ -107,8 +132,8 @@ const VehicleDetails: React.FC = () => {
                   key={index}
                   className="flex flex-col items-center justify-center p-4 bg-white border border-gray-200 rounded-xl hover:border-gray-300 transition-colors"
                 >
-                  <Icon className="w-5 h-5 text-gray-700 mb-2" />
-                  <span className="text-xs text-gray-600 text-center">
+                  <Icon className="w-8 h-8 text-gray-700 mb-2" />
+                  <span className="text-[16px] text-gray-600 text-center">
                     {spec.label}
                   </span>
                 </div>
@@ -121,8 +146,10 @@ const VehicleDetails: React.FC = () => {
       {/* Browse Another Section */}
       <div className="pt-4">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-medium text-gray-600">Browse another</h2>
-          <button className="text-gray-500 text-sm hover:text-gray-700">
+          <h2 className="text-[24px] font-bold text-[#808080]">
+            Browse another
+          </h2>
+          <button className="text-[#808080] text-[24px] font-regular hover:text-gray-700">
             view more
           </button>
         </div>
@@ -133,11 +160,11 @@ const VehicleDetails: React.FC = () => {
               key={car.id}
               className="bg-white border border-gray-200 rounded-2xl p-4 hover:shadow-lg transition-shadow"
             >
-              <div className="bg-gray-50 rounded-xl mb-4 p-4 h-32 flex items-center justify-center">
+              <div className="bg-gray-50 rounded-xl mb-4 p-0 h-60 overflow-hidden">
                 <img
                   src={car.image}
                   alt={car.name}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-cover rounded-xl"
                 />
               </div>
 

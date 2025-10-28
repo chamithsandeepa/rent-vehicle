@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import type { Variants } from "framer-motion";
-import { Star, User, Fuel, Gauge } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import VehicleCard from "@/components/VehicleCard";
+import type { Vehicle } from "@/components/VehicleCard";
 
-// Animation variants
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 40 },
   visible: {
@@ -17,35 +17,26 @@ const fadeUp: Variants = {
 
 const staggerContainer: Variants = {
   hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.15 },
-  },
-};
-
-const cardAnimation: Variants = {
-  hidden: { opacity: 0, scale: 0.95, y: 40 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: { duration: 0.7, ease: ["easeInOut"] },
-  },
+  visible: { transition: { staggerChildren: 0.15 } },
 };
 
 const VehicleFleet = () => {
   const [activeFilter, setActiveFilter] = useState("All");
+  const [visibleCount, setVisibleCount] = useState(3);
+  const navigate = useNavigate();
 
   const filters = [
     "All",
     "Cars",
     "SUVs",
     "Vans",
-    "scooter",
+    "Scooter",
     "Safari Jeep",
     "Luxury",
   ];
 
-  const vehicles = [
+  // 🚗 Vehicles list
+  const vehicles: Vehicle[] = [
     {
       id: 1,
       name: "Mercedes-Benz V-Class",
@@ -63,7 +54,7 @@ const VehicleFleet = () => {
     },
     {
       id: 2,
-      name: "Mercedes-Benz V-Class",
+      name: "Mercedes-Benz EQS",
       image:
         "https://images.unsplash.com/photo-1617654112368-307921291f42?w=400&h=300&fit=crop",
       rating: 4,
@@ -138,6 +129,14 @@ const VehicleFleet = () => {
     },
   ];
 
+  const handleViewDetails = (vehicle: Vehicle) => {
+    navigate(`/vehicle/${vehicle.id}`, { state: { vehicle } });
+  };
+
+  const handleViewMore = () => {
+    setVisibleCount((prev) => prev + 3);
+  };
+
   return (
     <motion.section
       id="fleet"
@@ -148,13 +147,12 @@ const VehicleFleet = () => {
       viewport={{ once: true, amount: 0.3 }}
     >
       <div className="max-w-7xl mx-auto">
-        {/* Header Section */}
+        {/* Header */}
         <motion.div
           className="text-center mb-12"
           variants={fadeUp}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true }}
         >
           <h2 className="text-[40px] font-bold mb-3">
             Explore <span className="text-[#EDA200]">Our</span> Full Fleet
@@ -164,13 +162,12 @@ const VehicleFleet = () => {
           </p>
         </motion.div>
 
-        {/* Filter Buttons */}
+        {/* Filter */}
         <motion.div
           className="flex flex-wrap justify-center gap-3 mb-12"
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true }}
         >
           {filters.map((filter) => (
             <motion.button
@@ -183,116 +180,39 @@ const VehicleFleet = () => {
                   ? "bg-[#EDA200] text-white shadow-md"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
-              variants={fadeUp}
             >
               {filter}
             </motion.button>
           ))}
         </motion.div>
 
-        {/* Vehicle Cards Grid */}
+        {/* Cards */}
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true }}
         >
-          {vehicles.map((vehicle) => (
-            <motion.div
+          {vehicles.slice(0, visibleCount).map((vehicle) => (
+            <VehicleCard
               key={vehicle.id}
-              variants={cardAnimation}
-              whileHover={{ scale: 1.03 }}
-              className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow overflow-hidden"
-            >
-              {/* Image Section */}
-              <div className="relative">
-                <img
-                  src={vehicle.image}
-                  alt={vehicle.name}
-                  className="w-full h-56 object-cover"
-                />
-                {vehicle.available && (
-                  <Badge className="absolute top-4 left-4 bg-[#EDA200] hover:bg-[#EDA200] text-white px-3 py-1 text-xs font-semibold">
-                    Available
-                  </Badge>
-                )}
-              </div>
-
-              {/* Content Section */}
-              <div className="p-6">
-                {/* Vehicle Name */}
-                <h3 className="text-[24px] font-bold text-gray-900 mb-3">
-                  {vehicle.name}
-                </h3>
-
-                {/* Rating */}
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="flex gap-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-4 h-4 ${
-                          i < vehicle.rating
-                            ? "fill-[#EDA200] text-[#EDA200]"
-                            : "fill-gray-200 text-gray-200"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-[14px] text-gray-600">
-                    ({vehicle.reviews})
-                  </span>
-                </div>
-
-                {/* Vehicle Details */}
-                <div className="flex items-center justify-between mb-4 text-[14px] text-gray-700">
-                  <div className="flex items-center gap-2">
-                    <User className="w-4 h-4" />
-                    <span>{vehicle.passengers} Person</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Fuel className="w-4 h-4" />
-                    <span>{vehicle.fuel}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Gauge className="w-4 h-4" />
-                    <span>{vehicle.mileage}</span>
-                  </div>
-                </div>
-
-                {/* Extra Charge */}
-                <div className="bg-[#EDA200]/10 rounded-3xl p-3 mb-4">
-                  <p className="text-[14px] text-gray-700 text-center">
-                    Extra km Charge :{" "}
-                    <span className="font-semibold">{vehicle.extraCharge}</span>
-                  </p>
-                </div>
-
-                <hr className="border-gray-200 mb-4" />
-
-                {/* Price Section */}
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-400 line-through text-[14px]">
-                      {vehicle.originalPrice}
-                    </p>
-                    <p className="text-[20px] font-bold text-[#EDA200]">
-                      {vehicle.price}
-                      {" / "}
-                      <span className="text-[14px] font-normal text-gray-600">
-                        day
-                      </span>
-                    </p>
-                  </div>
-                  <Button className="bg-[#EDA200] hover:bg-[#EDA200] text-white px-6 py-2 rounded-md font-medium">
-                    View details
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
+              vehicle={vehicle}
+              onViewDetails={handleViewDetails}
+            />
           ))}
         </motion.div>
+
+        {/* View More Button */}
+        {visibleCount < vehicles.length && (
+          <div className="flex justify-center mt-10">
+            <Button
+              onClick={handleViewMore}
+              className="bg-[#EDA200] hover:bg-[#EDA200]/90 text-white px-8 py-3 rounded-full font-semibold"
+            >
+              View More
+            </Button>
+          </div>
+        )}
       </div>
     </motion.section>
   );

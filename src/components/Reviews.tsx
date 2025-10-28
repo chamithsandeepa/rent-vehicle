@@ -59,7 +59,7 @@ const Reviews: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-[55%_45%] gap-8">
         {/* Reviews List */}
         <div className="space-y-6">
           {reviews.map((review) => (
@@ -71,7 +71,9 @@ const Reviews: React.FC = () => {
               />
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  <h3 className="font-semibold text-gray-900">{review.name}</h3>
+                  <h3 className="text-[20px] font-semibold text-gray-900">
+                    {review.name}
+                  </h3>
                   {review.verified && (
                     <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                   )}
@@ -88,28 +90,31 @@ const Reviews: React.FC = () => {
                     />
                   ))}
                 </div>
-                <p className="text-gray-600 text-sm leading-relaxed">
+                <p className="text-gray-600 text-[16px] leading-relaxed">
                   {review.text}
                 </p>
               </div>
             </div>
           ))}
 
-          <button className="w-full text-center py-3 border-b-2 border-gray-900 text-gray-900 font-medium hover:border-yellow-500 transition-colors">
-            Load more
+          <button className="relative group mx-auto block text-center py-3 text-gray-900 font-medium">
+            <span className="inline-block relative">
+              Load more
+              <span className="block mx-auto mt-1 h-0.5 w-full bg-gray-900 group-hover:bg-yellow-500 transition-all duration-300"></span>
+            </span>
           </button>
         </div>
 
         {/* Add Review Form */}
-        <div className="bg-white">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">
+        <div className="bg-white border rounded-2xl p-6 shadow-xl">
+          <h2 className="text-[24px] font-semibold text-gray-900 mb-6">
             Add your review
           </h2>
 
           <div className="space-y-6">
             {/* Name Input */}
             <div>
-              <label className="block text-gray-900 font-medium mb-2">
+              <label className="text-[20px] font-regular block text-gray-900  mb-2">
                 Name
               </label>
               <input
@@ -123,7 +128,7 @@ const Reviews: React.FC = () => {
 
             {/* Message Textarea */}
             <div>
-              <label className="block text-gray-900 font-medium mb-2">
+              <label className="text-[20px] font-regular block text-gray-900 mb-2">
                 Message
               </label>
               <textarea
@@ -137,7 +142,7 @@ const Reviews: React.FC = () => {
 
             {/* Ratings */}
             <div>
-              <label className="block text-gray-900 font-medium mb-3">
+              <label className="text-[20px] font-regular block text-gray-900 mb-3">
                 Ratings
               </label>
               <div className="flex gap-2">

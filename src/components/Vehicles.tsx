@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import type { Variants } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import VehicleCard from "@/components/VehicleCard";
-import type { Vehicle } from "@/components/VehicleCard";
+import { allVehicles, type Vehicle } from "@/types/VehicleData";
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 40 },
@@ -22,7 +22,6 @@ const staggerContainer: Variants = {
 
 const VehicleFleet = () => {
   const [activeFilter, setActiveFilter] = useState("All");
-  const [visibleCount, setVisibleCount] = useState(3);
   const navigate = useNavigate();
 
   const filters = [
@@ -30,117 +29,35 @@ const VehicleFleet = () => {
     "Cars",
     "SUVs",
     "Vans",
-    "Scooter",
+    "Scooty",
     "Safari Jeep",
     "Luxury",
   ];
 
-  // 🚗 Vehicles list
-  const vehicles: Vehicle[] = [
-    {
-      id: 1,
-      name: "Mercedes-Benz V-Class",
-      image:
-        "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=300&fit=crop",
-      rating: 4,
-      reviews: "2K Reviews",
-      passengers: 5,
-      fuel: "Petrol",
-      mileage: "350 km (daily)",
-      extraCharge: "$0.50/km",
-      originalPrice: "RS. 15,000",
-      price: "RS. 12,000",
-      available: true,
-    },
-    {
-      id: 2,
-      name: "Mercedes-Benz EQS",
-      image:
-        "https://images.unsplash.com/photo-1617654112368-307921291f42?w=400&h=300&fit=crop",
-      rating: 4,
-      reviews: "2K Reviews",
-      passengers: 5,
-      fuel: "Petrol",
-      mileage: "350 km (daily)",
-      extraCharge: "$0.50/km",
-      originalPrice: "RS. 15,000",
-      price: "RS. 12,000",
-      available: true,
-    },
-    {
-      id: 3,
-      name: "Honda Dio",
-      image:
-        "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
-      rating: 4,
-      reviews: "2K Reviews",
-      passengers: 2,
-      fuel: "Petrol",
-      mileage: "350 km (daily)",
-      extraCharge: "$0.50/km",
-      originalPrice: "RS. 15,000",
-      price: "RS. 12,000",
-      available: true,
-    },
-    {
-      id: 4,
-      name: "Toyota Camry",
-      image:
-        "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400&h=300&fit=crop",
-      rating: 4,
-      reviews: "1.8K Reviews",
-      passengers: 5,
-      fuel: "Petrol",
-      mileage: "400 km (daily)",
-      extraCharge: "$0.45/km",
-      originalPrice: "RS. 14,000",
-      price: "RS. 11,500",
-      available: true,
-    },
-    {
-      id: 5,
-      name: "BMW X5",
-      image:
-        "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=400&h=300&fit=crop",
-      rating: 5,
-      reviews: "2.5K Reviews",
-      passengers: 7,
-      fuel: "Diesel",
-      mileage: "300 km (daily)",
-      extraCharge: "$0.60/km",
-      originalPrice: "RS. 20,000",
-      price: "RS. 16,000",
-      available: true,
-    },
-    {
-      id: 6,
-      name: "Tesla Model 3",
-      image:
-        "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=400&h=300&fit=crop",
-      rating: 5,
-      reviews: "3K Reviews",
-      passengers: 5,
-      fuel: "Electric",
-      mileage: "450 km (daily)",
-      extraCharge: "$0.40/km",
-      originalPrice: "RS. 18,000",
-      price: "RS. 15,000",
-      available: true,
-    },
-  ];
+  // Filter vehicles based on active category filter
+  const filteredVehicles = useMemo(() => {
+    if (activeFilter === "All") {
+      return allVehicles;
+    }
+    return allVehicles.filter((vehicle) => vehicle.category === activeFilter);
+  }, [activeFilter]);
+
+  // Show only first 6 vehicles in the fleet section
+  const displayedVehicles = filteredVehicles.slice(0, 6);
 
   const handleViewDetails = (vehicle: Vehicle) => {
     navigate(`/vehicle/${vehicle.id}`, { state: { vehicle } });
   };
 
   const handleViewMore = () => {
-    setVisibleCount((prev) => prev + 3);
+    // Navigate to AllVehicles page with active filter
+    navigate("/vehicles", { state: { activeFilter } });
   };
 
   return (
     <motion.section
       id="fleet"
-      className="py-16 px-4 bg-white select-none"
+      className="py-16 px-4 bg-white select-none scroll-mt-5"
       variants={fadeUp}
       initial="hidden"
       whileInView="visible"
@@ -162,7 +79,7 @@ const VehicleFleet = () => {
           </p>
         </motion.div>
 
-        {/* Filter */}
+        {/* Filter Tabs */}
         <motion.div
           className="flex flex-wrap justify-center gap-3 mb-12"
           variants={staggerContainer}
@@ -186,32 +103,66 @@ const VehicleFleet = () => {
           ))}
         </motion.div>
 
-        {/* Cards */}
+        {/* Results Count */}
+        {activeFilter !== "All" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center mb-6"
+          >
+            <p className="text-sm text-gray-600">
+              Showing {displayedVehicles.length} of {filteredVehicles.length}{" "}
+              {activeFilter} vehicles
+            </p>
+          </motion.div>
+        )}
+
+        {/* Vehicle Cards */}
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
+          key={activeFilter} // Re-animate when filter changes
         >
-          {vehicles.slice(0, visibleCount).map((vehicle) => (
-            <VehicleCard
-              key={vehicle.id}
-              vehicle={vehicle}
-              onViewDetails={handleViewDetails}
-            />
-          ))}
+          {displayedVehicles.length > 0 ? (
+            displayedVehicles.map((vehicle) => (
+              <VehicleCard
+                key={vehicle.id}
+                vehicle={vehicle}
+                onViewDetails={() => handleViewDetails(vehicle)}
+              />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <p className="text-gray-500 text-lg">
+                No {activeFilter} vehicles available at the moment.
+              </p>
+              <button
+                onClick={() => setActiveFilter("All")}
+                className="mt-4 text-[#EDA200] hover:underline font-medium"
+              >
+                View all vehicles
+              </button>
+            </div>
+          )}
         </motion.div>
 
-        {/* View More Button */}
-        {visibleCount < vehicles.length && (
-          <div className="flex justify-center mt-10">
+        {/* View All Vehicles Button */}
+        {displayedVehicles.length > 0 && (
+          <motion.div
+            className="flex justify-center mt-10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
             <Button
               onClick={handleViewMore}
               className="bg-[#EDA200] hover:bg-[#EDA200]/90 text-white px-8 py-3 rounded-full font-semibold"
             >
-              View More
+              View All Vehicles
             </Button>
-          </div>
+          </motion.div>
         )}
       </div>
     </motion.section>

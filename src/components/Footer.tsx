@@ -2,8 +2,12 @@ import React from "react";
 import { Facebook, Twitter, Linkedin, Instagram, Globe } from "lucide-react";
 import { motion } from "framer-motion";
 import type { Variants } from "framer-motion";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Footer: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   // ✅ Safe variant types (no TS issues)
   const fadeUp: Variants = {
     hidden: { opacity: 0, y: 30 },
@@ -20,6 +24,42 @@ const Footer: React.FC = () => {
       scale: 1.15,
       transition: { type: "spring", stiffness: 300, damping: 10 },
     },
+  };
+
+  // Quick Links with their corresponding sections
+  const quickLinks = [
+    { name: "Home", href: "#home" },
+    { name: "Simple Steps", href: "#steps" },
+    { name: "Book Vehicles", href: "#fleet" },
+    { name: "Why Choose Us", href: "#why-choose" },
+    { name: "Contact Us", href: "#get-in-touch" },
+  ];
+
+  // Support Links
+  const supportLinks = [
+    { name: "Contact Us", href: "#get-in-touch" },
+    { name: "FAQs", href: "#faq" },
+    { name: "Help Center", href: "#get-in-touch" }, // Can point to contact or a dedicated help page
+  ];
+
+  // Handle navigation to sections
+  const handleNavClick = (href: string) => {
+    if (location.pathname !== "/") {
+      // If not on home page, navigate to home first, then scroll
+      navigate("/");
+      setTimeout(() => {
+        const element = document.querySelector(href);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 300);
+    } else {
+      // If already on home page, just scroll
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
   };
 
   return (
@@ -71,20 +111,14 @@ const Footer: React.FC = () => {
             <motion.div variants={fadeUp} custom={1}>
               <h3 className="text-lg font-semibold mb-6">Quick Links</h3>
               <ul className="space-y-3">
-                {[
-                  "Home",
-                  "Simple Steps",
-                  "Book Vehicles",
-                  "Why Choose Us",
-                  "Contact Us",
-                ].map((item, idx) => (
+                {quickLinks.map((item, idx) => (
                   <motion.li key={idx} variants={fadeUp} custom={idx + 1}>
-                    <a
-                      href="#"
-                      className="text-base text-gray-400 hover:text-white transition-colors"
+                    <button
+                      onClick={() => handleNavClick(item.href)}
+                      className="text-base text-gray-400 hover:text-white transition-colors text-left"
                     >
-                      {item}
-                    </a>
+                      {item.name}
+                    </button>
                   </motion.li>
                 ))}
               </ul>
@@ -94,14 +128,14 @@ const Footer: React.FC = () => {
             <motion.div variants={fadeUp} custom={2}>
               <h3 className="text-lg font-semibold mb-6">Supports</h3>
               <ul className="space-y-3 mb-8">
-                {["Contact Us", "FAQs", "Help Center"].map((support, idx) => (
+                {supportLinks.map((support, idx) => (
                   <motion.li key={idx} variants={fadeUp} custom={idx + 2}>
-                    <a
-                      href="#"
-                      className="text-base text-gray-400 hover:text-white transition-colors"
+                    <button
+                      onClick={() => handleNavClick(support.href)}
+                      className="text-base text-gray-400 hover:text-white transition-colors text-left"
                     >
-                      {support}
-                    </a>
+                      {support.name}
+                    </button>
                   </motion.li>
                 ))}
               </ul>

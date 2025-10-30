@@ -1,6 +1,7 @@
-import { Star, Users, Fuel, Gauge, Wifi, Battery } from "lucide-react";
+import { Star, Users, Fuel, Gauge, Settings, Wind } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface Specification {
   icon: LucideIcon;
@@ -13,25 +14,47 @@ interface SimilarCar {
   image: string;
   rating: number;
   reviews: string;
-  seats: string;
-  persons: string;
+  passengers: number;
+  transmission: string;
   fuel: string;
-  range: string;
+  airConditioning: boolean;
+  mileage: string;
   price: string;
-  period: string;
+  pricePerDay: number;
 }
 
 const VehicleDetails: React.FC = () => {
- const [showMore, setShowMore] = useState(false);
+  const [showMore, setShowMore] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const specifications: Specification[] = [
-    { icon: Users, label: "5 Seat" },
-    { icon: Users, label: "5 Person" },
-    { icon: Fuel, label: "Petrol" },
-    { icon: Gauge, label: "80 km" },
-    { icon: Wifi, label: "Wi-Fi hotspot" },
-    { icon: Battery, label: "Charging ports" },
-  ];
+  // Get vehicle data from navigation state
+  const vehicle = location.state?.vehicle;
+
+  // Generate specifications based on vehicle data
+  const getSpecifications = (): Specification[] => {
+    if (!vehicle) {
+      return [
+        { icon: Users, label: "5 Seat" },
+        { icon: Users, label: "5 Person" },
+        { icon: Fuel, label: "Petrol" },
+        { icon: Settings, label: "Automatic" },
+        { icon: Wind, label: "A/C" },
+        { icon: Gauge, label: "350 km" },
+      ];
+    }
+
+    return [
+      { icon: Users, label: `${vehicle.passengers} Seat` },
+      { icon: Users, label: `${vehicle.passengers} Person` },
+      { icon: Fuel, label: vehicle.fuel },
+      { icon: Settings, label: vehicle.transmission || "Automatic" },
+      { icon: Wind, label: vehicle.airConditioning ? "A/C" : "No A/C" },
+      { icon: Gauge, label: vehicle.mileage },
+    ];
+  };
+
+  const specifications = getSpecifications();
 
   const similarCars: SimilarCar[] = [
     {
@@ -41,26 +64,28 @@ const VehicleDetails: React.FC = () => {
         "https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=400&q=80",
       rating: 4,
       reviews: "2K Reviews",
-      seats: "4 Seat",
-      persons: "5 Person",
+      passengers: 5,
+      transmission: "Automatic",
       fuel: "Petrol",
-      range: "80 km",
+      airConditioning: true,
+      mileage: "350 km",
       price: "RS. 12,000",
-      period: "day",
+      pricePerDay: 12000,
     },
     {
       id: 2,
-      name: "Mercedes-Benz V-Class",
+      name: "BMW X5",
       image:
         "https://images.unsplash.com/photo-1619682817481-e994891cd1f5?w=400&q=80",
-      rating: 4,
-      reviews: "2K Reviews",
-      seats: "4 Seat",
-      persons: "5 Person",
-      fuel: "Petrol",
-      range: "80 km",
-      price: "RS. 12,000",
-      period: "day",
+      rating: 5,
+      reviews: "2.5K Reviews",
+      passengers: 7,
+      transmission: "Automatic",
+      fuel: "Diesel",
+      airConditioning: true,
+      mileage: "300 km",
+      price: "RS. 16,000",
+      pricePerDay: 16000,
     },
     {
       id: 3,
@@ -69,14 +94,29 @@ const VehicleDetails: React.FC = () => {
         "https://images.unsplash.com/photo-1558981852-426c6c22a060?w=400&q=80",
       rating: 4,
       reviews: "2K Reviews",
-      seats: "2 Seat",
-      persons: "2 Person",
+      passengers: 2,
+      transmission: "Manual",
       fuel: "Petrol",
-      range: "80 km",
-      price: "RS. 12,000",
-      period: "day",
+      airConditioning: false,
+      mileage: "80 km",
+      price: "RS. 3,000",
+      pricePerDay: 3000,
     },
   ];
+
+  const handleViewDetails = (car: SimilarCar) => {
+    navigate(`/vehicle/${car.id}`, {
+      state: {
+        vehicle: {
+          ...car,
+          available: true,
+          extraCharge: "$0.50/km",
+          originalPrice: car.price,
+          category: "Cars",
+        },
+      },
+    });
+  };
 
   return (
     <div className="w-full space-y-8">
@@ -88,19 +128,19 @@ const VehicleDetails: React.FC = () => {
             Description
           </h2>
           <p className="text-gray-600 leading-relaxed">
-            Experience luxury, comfort, and space with the Mercedes-Benz
-            V-Class. Perfect for family trips, group travel, or executive rides,
-            this premium van offers plush seating, advanced safety features, and
-            a smooth, powerful drive. Enjoy ample legroom, modern infotainment,
-            and a stylish{" "}
+            Experience luxury, comfort, and space with the{" "}
+            {vehicle?.name || "Mercedes-Benz V-Class"}. Perfect for family
+            trips, group travel, or executive rides, this premium vehicle offers
+            plush seating, advanced safety features, and a smooth, powerful
+            drive. Enjoy ample legroom, modern infotainment, and a stylish{" "}
             {showMore ? (
               <>
-                interior that reflects Mercedes-Benz craftsmanship at its
-                finest. Whether you’re cruising through city streets or gliding
-                across scenic highways, every moment inside the V-Class feels
-                first-class. From adaptive climate control to ambient lighting
-                and sleek design lines, it’s more than just a vehicle — it’s
-                your personal luxury suite on wheels.{" "}
+                interior that reflects craftsmanship at its finest. Whether
+                you're cruising through city streets or gliding across scenic
+                highways, every moment inside feels first-class. From adaptive
+                climate control to ambient lighting and sleek design lines, it's
+                more than just a vehicle — it's your personal luxury suite on
+                wheels.{" "}
                 <span
                   className="text-yellow-500 cursor-pointer hover:underline"
                   onClick={() => setShowMore(false)}
@@ -189,15 +229,19 @@ const VehicleDetails: React.FC = () => {
               <div className="space-y-2 mb-4">
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <Users className="w-4 h-4" />
-                  <span>{car.seats}</span>
-                  <Users className="w-4 h-4 ml-2" />
-                  <span>{car.persons}</span>
+                  <span>{car.passengers} Seat</span>
                   <Fuel className="w-4 h-4 ml-2" />
                   <span>{car.fuel}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Settings className="w-4 h-4" />
+                  <span>{car.transmission}</span>
+                  <Wind className="w-4 h-4 ml-2" />
+                  <span>{car.airConditioning ? "A/C" : "No A/C"}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600">
                   <Gauge className="w-4 h-4" />
-                  <span>{car.range}</span>
+                  <span>{car.mileage}</span>
                 </div>
               </div>
 
@@ -206,9 +250,12 @@ const VehicleDetails: React.FC = () => {
                   <span className="text-lg font-bold text-yellow-500">
                     {car.price}
                   </span>
-                  <span className="text-xs text-gray-500">/ {car.period}</span>
+                  <span className="text-xs text-gray-500">/ day</span>
                 </div>
-                <button className="bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                <button
+                  onClick={() => handleViewDetails(car)}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+                >
                   View details
                 </button>
               </div>

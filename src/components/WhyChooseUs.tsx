@@ -65,7 +65,10 @@ const WhyChooseUs = () => {
   };
 
   return (
-    <section id="why-choose" className="py-16 px-4 bg-white overflow-hidden">
+    <section
+      id="why-choose"
+      className="py-16 px-4 bg-white overflow-hidden scroll-mt-7"
+    >
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <motion.div

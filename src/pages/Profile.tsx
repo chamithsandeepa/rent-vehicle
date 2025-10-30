@@ -1,10 +1,11 @@
 // ========================================
 // ProfileBookingPage.tsx (Updated)
 // ========================================
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import ProfileHeader from "@/components/userprofile/ProfileHeader";
 import PersonalInfoCard from "@/components/userprofile/PersonalInfoCard";
 import BookingTabs from "@/components/userprofile/BookingTabs";
-import Navbar from "@/components/Navbar";
 
 const ProfileBookingPage = () => {
   const userProfile = {
@@ -80,10 +81,17 @@ const ProfileBookingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F7F7] p-6">
-      <Navbar />
+    <div className="py-16 px-4 min-h-screen bg-[#F7F7F7] p-6">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-[32px] font-semibold mb-6 pt-24">
+        <Link
+          to="/"
+          className="inline-flex items-center text-muted-foreground hover:text-[#f5a623] mb-8 transition-colors font-medium"
+        >
+          <ArrowLeft className="w-5 h-5 mr-2 transition-colors" />
+          Back to Home
+        </Link>
+
+        <h1 className="text-[32px] font-semibold mb-10 ">
           Profile Information
         </h1>
         <ProfileHeader {...userProfile} />

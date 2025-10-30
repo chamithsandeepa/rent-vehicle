@@ -44,25 +44,19 @@ const FAQ = () => {
       id: 2,
       question: "What types of vehicles are available?",
       answer:
-        "We offer a wide range of vehicles including economy cars, SUVs, luxury vehicles, vans, scooters, and safari jeeps to suit every need and budget.",
+        "We offer a range of vehicles to suit your needs, including vans, cars, SUVs, jeeps, and scooties.",
     },
     {
       id: 3,
-      question: "Can I change my booking dates or vehicle?",
+      question: "How do I pay for my booking?",
       answer:
-        "Yes, you can modify your booking dates or change your vehicle selection. Please contact us at least 24 hours before your pickup time to make changes.",
+        "Payment is done face-to-face on site when you pick up the vehicle.",
     },
     {
       id: 4,
-      question: "How do I pay for my booking?",
-      answer:
-        "Payment is made in person when you collect the vehicle. We accept cash and all major credit/debit cards for your convenience.",
-    },
-    {
-      id: 5,
       question: "How can I contact you for assistance?",
       answer:
-        "You can reach us through phone, email, or visit our office in person. Our friendly staff is ready to assist you with any questions or concerns.",
+        "You can reach us anytime through the “Contact Us” button in the Get in Touch section. When you click it, you’ll be automatically redirected to our WhatsApp chat to talk directly with our support team.",
     },
   ];
 
@@ -71,7 +65,7 @@ const FAQ = () => {
   };
 
   return (
-    <section id="faq" className="py-16 px-4 bg-white overflow-hidden">
+    <section id="faq" className="py-16 px-4 bg-white overflow-hidden scroll-mt-7">
       <motion.div
         className="max-w-7xl mx-auto"
         variants={containerVariants}

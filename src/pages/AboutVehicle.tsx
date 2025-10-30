@@ -55,7 +55,7 @@ const AboutVehicle: React.FC = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-white p-8">
+      <div className="py-16 px-4 min-h-screen bg-white p-8">
         <div className="max-w-7xl mx-auto">
           <Link
             to="/"
@@ -65,7 +65,7 @@ const AboutVehicle: React.FC = () => {
             Back to Home
           </Link>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[55%_45%] gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-[55%_45%] gap-8 mb-10">
             {/* Left Section */}
             <div className="space-y-6">
               <div className="bg-gray-50 rounded-2xl shadow-2xl flex items-center justify-center">
